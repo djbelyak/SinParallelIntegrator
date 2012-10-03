@@ -1,8 +1,7 @@
 #!/bin/bash
 #Скрипт сборки проекта
+rm sinparallelintegrator > /dev/null
 
-gcc sinparallelintegrator.c -o sinparallelintegrator -lm
-
-
+gcc -std=c99 sinparallelintegrator.c -o sinparallelintegrator -lm
 
 ./sinparallelintegrator
