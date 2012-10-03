@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 
 int main (int argc, char* argv[])
 {
@@ -38,6 +39,8 @@ int main (int argc, char* argv[])
 	printf ("Введите количество отрезков разбиения:");
 	scanf ("%lf",&n);
 
+	//Начинаем отсчет времени выполнения
+	clock_t tStart = clock();
 	//Находим ширину отрезка
 	double delta = (b-a)/n;
 	//Объявляем накопитель
@@ -47,8 +50,13 @@ int main (int argc, char* argv[])
 		numerical += sin(x);
 	//Умножаем на ширину отрезков
 	numerical *= delta;
+	//Останавливаем отсчет времени выполнения
+	clock_t tStop = clock();
 	//Выводим полученное численное значение
 	printf ("Численное значение:%10.9lf\n",numerical);
+
+	//Выводим время работы программы
+	printf("Численный расчет выполнен за %.3f сек\n", (float)(tStop - tStart) / CLOCKS_PER_SEC);
 
 	
 	//Корректное завершение программы
