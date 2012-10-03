@@ -43,7 +43,7 @@ int main (int argc, char* argv[])
 	//Объявляем накопитель
 	double numerical = 0.0;
 	//Суммируем значения высот прямоугольников
-	for (double x = a; x < b; x += delta)
+	for (double x = a + delta/2; x <= b; x += delta)
 		numerical += sin(x);
 	//Умножаем на ширину отрезков
 	numerical *= delta;
