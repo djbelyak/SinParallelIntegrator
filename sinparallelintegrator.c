@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
+#include <omp.h>
 
 int main (int argc, char* argv[])
 {
@@ -54,10 +55,10 @@ int main (int argc, char* argv[])
 	printf ("Аналитическое значение:%10.9lf\n",analitic);
  
 	//Объявляем переменную количества отрезков разбиения
-	double n;
+	unsigned long n;
 	//Читаем количество отрезков с клавиатуры  у пользователя
 	printf ("Введите количество отрезков разбиения:");
-	scanf ("%lf",&n);
+	scanf ("%lu",&n);
 	printf ("Выполняется расчет...\n");
 	
 	//Начинаем отсчет времени выполнения
@@ -66,9 +67,16 @@ int main (int argc, char* argv[])
 	double delta = (b-a)/n;
 	//Объявляем накопитель
 	double numerical = 0.0;
+	//Объявляем итераторы по оси x
+	double x;
+	unsigned long i;
+	#pragma omp parallel for reduction(+:numerical) private(x) shared (i)
 	//Суммируем значения высот прямоугольников
-	for (double x = a; x < b; x += delta)
+	for (i = 0; i<n;i++)
+	{
+		x = a+delta*(double)i;
 		numerical += sin(x);
+	}
 	//Умножаем на ширину отрезков
 	numerical *= delta;
 	//Останавливаем отсчет времени выполнения
