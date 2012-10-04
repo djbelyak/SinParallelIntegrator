@@ -10,6 +10,7 @@
 #include <math.h>
 #include <time.h>
 #include <omp.h>
+#define CLOCK_REALTIME 0
 
 int main (int argc, char* argv[])
 {
@@ -62,7 +63,8 @@ int main (int argc, char* argv[])
 	printf ("Выполняется расчет...\n");
 	
 	//Начинаем отсчет времени выполнения
-	clock_t tStart = clock();
+	struct timespec tStart; 
+	clock_gettime(CLOCK_REALTIME, &tStart); 
 	//Находим ширину отрезка
 	double delta = (b-a)/n;
 	//Объявляем накопитель
@@ -70,7 +72,7 @@ int main (int argc, char* argv[])
 	//Объявляем итераторы по оси x
 	double x;
 	unsigned long i;
-	#pragma omp parallel for reduction(+:numerical) private(i,x)// shared (a,delta)
+	#pragma omp parallel for reduction(+:numerical) private(x) shared (i)
 	//Суммируем значения высот прямоугольников
 	for (i = 0; i<n;i++)
 	{
@@ -80,12 +82,13 @@ int main (int argc, char* argv[])
 	//Умножаем на ширину отрезков
 	numerical *= delta;
 	//Останавливаем отсчет времени выполнения
-	clock_t tStop = clock();
+	struct timespec *tStop = new timespec(); 
+	clock_gettime(CLOCK_REALTIME, &tStop); 
 	//Выводим полученное численное значение
 	printf ("Численное значение:%10.9lf\n",numerical);
 
 	//Выводим время работы программы
-	printf("Численный расчет выполнен за %.3f сек\n", (float)(tStop - tStart) / CLOCKS_PER_SEC);
+	printf("Численный расчет выполнен за %.3f сек\n", (float)(tStop.tv_sec - tStart.tv_sec));
 
 	
 	//Корректное завершение программы

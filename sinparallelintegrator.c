@@ -10,6 +10,11 @@
 #include <math.h>
 #include <time.h>
 #include <omp.h>
+#define CLOCK_REALTIME 0
+struct timespec {
+	time_t tv_sec; /* seconds */
+	long tv_nsec; /* nanoseconds */
+};
 
 int main (int argc, char* argv[])
 {
@@ -62,7 +67,8 @@ int main (int argc, char* argv[])
 	printf ("Выполняется расчет...\n");
 	
 	//Начинаем отсчет времени выполнения
-	clock_t tStart = clock();
+	struct timespec tStart; 
+	clock_gettime(CLOCK_REALTIME, &tStart); 
 	//Находим ширину отрезка
 	double delta = (b-a)/n;
 	//Объявляем накопитель
@@ -80,12 +86,13 @@ int main (int argc, char* argv[])
 	//Умножаем на ширину отрезков
 	numerical *= delta;
 	//Останавливаем отсчет времени выполнения
-	clock_t tStop = clock();
+	struct timespec tStop; 
+	clock_gettime(CLOCK_REALTIME, &tStop); 
 	//Выводим полученное численное значение
 	printf ("Численное значение:%10.9lf\n",numerical);
 
 	//Выводим время работы программы
-	printf("Численный расчет выполнен за %.3f сек\n", (float)(tStop - tStart) / CLOCKS_PER_SEC);
+	printf("Численный расчет выполнен за %.3f сек\n", (float)(tStop.tv_sec - tStart.tv_sec));
 
 	
 	//Корректное завершение программы
