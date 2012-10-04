@@ -3,7 +3,7 @@
 
 //Распростаняется под лиценизией BSD
 //Автор: Белявцев И.П.
-//Version 0.1 (serial)
+//Version 1.0
 
 
 #include <stdio.h>
@@ -11,6 +11,10 @@
 #include <time.h>
 #include <omp.h>
 #define CLOCK_REALTIME 0
+struct timespec {
+	time_t tv_sec; /* seconds */
+	long tv_nsec; /* nanoseconds */
+};
 
 int main (int argc, char* argv[])
 {
@@ -82,7 +86,7 @@ int main (int argc, char* argv[])
 	//Умножаем на ширину отрезков
 	numerical *= delta;
 	//Останавливаем отсчет времени выполнения
-	struct timespec *tStop = new timespec(); 
+	struct timespec tStop; 
 	clock_gettime(CLOCK_REALTIME, &tStop); 
 	//Выводим полученное численное значение
 	printf ("Численное значение:%10.9lf\n",numerical);

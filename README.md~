@@ -1,4 +1,4 @@
-SinParallelIntegrator
+SinParallelIntegrator 
 =====================
-
+Version 0.1 (serial)
 Программа для параллельного вычисления интеграла синуса методом прямоугольников
