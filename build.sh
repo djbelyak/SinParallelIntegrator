@@ -1,8 +1,8 @@
 #!/bin/bash
-#Скрипт сборки проекта 
-#Version 0.1 (serial)
+#Скрипт сборки и запуска проекта 
+#Version 1.0
 rm sinparallelintegrator > /dev/null
 
-gcc -std=c99 sinparallelintegrator.c -o sinparallelintegrator -lm
+gcc -fopenmp -std=c99 sinparallelintegrator.c -o sinparallelintegrator -lm -lrt 
 
 ./sinparallelintegrator

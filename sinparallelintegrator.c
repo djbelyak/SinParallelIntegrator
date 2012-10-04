@@ -1,14 +1,20 @@
 //Главный модуль программы параллельного вычисления интеграла синуса
 //методом прямоугольников.
 
-//Распростаняется под лиценизией BSD
+//Распростаняется под новой лиценизией BSD
 //Автор: Белявцев И.П.
-//Version 0.1 (serial)
+//Version 1.0
 
 
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
+#include <omp.h>
+#define CLOCK_REALTIME 0
+struct timespec {
+	time_t tv_sec; /* seconds */
+	long tv_nsec; /* nanoseconds */
+};
 
 int main (int argc, char* argv[])
 {
@@ -54,30 +60,39 @@ int main (int argc, char* argv[])
 	printf ("Аналитическое значение:%10.9lf\n",analitic);
  
 	//Объявляем переменную количества отрезков разбиения
-	double n;
+	unsigned long n;
 	//Читаем количество отрезков с клавиатуры  у пользователя
 	printf ("Введите количество отрезков разбиения:");
-	scanf ("%lf",&n);
+	scanf ("%lu",&n);
 	printf ("Выполняется расчет...\n");
 	
 	//Начинаем отсчет времени выполнения
-	clock_t tStart = clock();
+	struct timespec tStart; 
+	clock_gettime(CLOCK_REALTIME, &tStart); 
 	//Находим ширину отрезка
 	double delta = (b-a)/n;
 	//Объявляем накопитель
 	double numerical = 0.0;
+	//Объявляем итераторы по оси x
+	double x;
+	unsigned long i;
+	#pragma omp parallel for reduction(+:numerical) private(x) shared (i)
 	//Суммируем значения высот прямоугольников
-	for (double x = a; x < b; x += delta)
+	for (i = 0; i<n;i++)
+	{
+		x = a+delta*(double)i;
 		numerical += sin(x);
+	}
 	//Умножаем на ширину отрезков
 	numerical *= delta;
 	//Останавливаем отсчет времени выполнения
-	clock_t tStop = clock();
+	struct timespec tStop; 
+	clock_gettime(CLOCK_REALTIME, &tStop); 
 	//Выводим полученное численное значение
 	printf ("Численное значение:%10.9lf\n",numerical);
 
 	//Выводим время работы программы
-	printf("Численный расчет выполнен за %.3f сек\n", (float)(tStop - tStart) / CLOCKS_PER_SEC);
+	printf("Численный расчет выполнен за %.3f сек\n", (float)(tStop.tv_sec - tStart.tv_sec));
 
 	
 	//Корректное завершение программы
